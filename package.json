@@ -1,0 +1,29 @@
+{
+  "name": "nsapi.js",
+  "version": "1.0.0",
+  "description": "NationStates API wrapper",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steven4547466/nationstatesapi.git"
+  },
+  "keywords": [
+    "nationstates",
+    "api",
+    "wrapper"
+  ],
+  "author": "Steven4547466",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/steven4547466/nationstatesapi/issues"
+  },
+  "homepage": "https://github.com/steven4547466/nationstatesapi#readme",
+  "dependencies": {
+    "better-sqlite3": "^5.4.3",
+    "enmap": "^5.1.2",
+    "xml-js": "^1.6.11"
+  }
+}
