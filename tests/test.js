@@ -5,9 +5,9 @@
  */
 
 let p = require('../../.secrets/password.json')
-let Client = require('../src/index.js')
-let client = new Client()
-let client2 = new Client({login: true, account:{name:"southern mesopotamia"/*, password:p.p*/}}) // once you login once you can remove your password until you change it
+let Client = require('../src/nsapi.js')
+let client = new Client.Client()
+let client2 = new Client.Client({login: true, account:{name:"southern mesopotamia"/*, password:p.p*/}}) // once you login once you can remove your password until you change it
 async function test(){
   // console.log(await client.getNations())
   // console.log(await client.getNewNations())

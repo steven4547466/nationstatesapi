@@ -1034,7 +1034,7 @@ class Client extends EventEmitter{
   
 }
 
-module.exports = Client
+module.exports.Client = Client
 
   // This didnt work. If you can get it working, please submit a pull request
   // What it returned: [
