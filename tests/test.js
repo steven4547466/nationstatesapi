@@ -73,7 +73,7 @@ async function test(){
   // console.log((await client.getWorldAssembly(['resolution', 'votetrack'])))
   // console.log((await client.getWorldAssembly(['resolution', 'dellog'])))
   // console.log((await client.getWorldAssembly(['resolution', 'delvotes'])))
-  console.log((await client.getWorldAssembly(['lastresolution'])))
+  // console.log((await client.getWorldAssembly(['lastresolution'])))
   client2.on('ready', async () =>{
     // console.log((await client2.getDossier()).DOSSIER)
     // console.log((await client2.getDossier(1)).DOSSIER)
