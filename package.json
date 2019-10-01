@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/steven4547466/nationstatesapi.git"
+    "url": "git+https://github.com/steven4547466/nsapi.js.git"
   },
   "keywords": [
     "nationstates",
@@ -18,9 +18,9 @@
   "author": "Steven4547466",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/steven4547466/nationstatesapi/issues"
+    "url": "https://github.com/steven4547466/nsapi.js/issues"
   },
-  "homepage": "https://github.com/steven4547466/nationstatesapi#readme",
+  "homepage": "https://github.com/steven4547466/nsapi.js#readme",
   "dependencies": {
     "better-sqlite3": "^5.4.3",
     "enmap": "^5.1.2",
