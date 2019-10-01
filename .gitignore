@@ -1,3 +1,7 @@
 node_modules/
 
 tests/data/
+
+.gitignore
+
+TODO.md

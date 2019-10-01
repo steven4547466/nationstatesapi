@@ -193,6 +193,7 @@ module.exports = {
     for(let i = 0; i < options.length; i++){
       if(typeof options[i] == "string"){
         str += options[i]
+        str += "+"
         continue
       }else{
         if(!options[i].type) throw new Error("You must include a type in objects in options.")
@@ -371,6 +372,7 @@ module.exports = {
     for(let i = 0; i < options.length; i++){
       if(typeof options[i] == "string"){
         str += options[i]
+        str += "+"
         continue
       }else{
         if(!options[i].type) throw new Error("You must include a type in objects in options.")
@@ -388,6 +390,7 @@ module.exports = {
     }
     if(str.endsWith("+")) str = str.slice(0, -1)
     if(str.endsWith(";")) str = str.slice(0, -1)
+    if(str.includes(';+')) str = str.substring(0, str.indexOf(";+")) + str.substring(str.indexOf(";+") + 1, str.length)
     str = str.replace(/;;/g, ";")
     return str
   },
@@ -415,6 +418,32 @@ module.exports = {
         o2[elements[i].elements[j].name] = elements[i].elements[j].elements[0].text ? elements[i].elements[j].elements[0].text : elements[i].elements[j].elements[0].cdata
       }
       o.push(o2)
+    }
+    return o
+  },
+
+  flattenResolution: (elements) => {
+    let o = {}
+    for(let i = 0; i < elements.length; i++){
+      if(elements[i].elements.length == 1 && elements[i].name != "DELLOG" && elements[i].name != "DELVOTES_FOR" && elements[i].name != "DELVOTES_AGAINST"){
+        o[elements[i].name] = elements[i].elements[0].text ? elements[i].elements[0].text : elements[i].elements[0].cdata
+      }else if(elements[i].name != "DELLOG" && elements[i].name != "DELVOTES_FOR" && elements[i].name != "DELVOTES_AGAINST"){
+        let o2 = []
+        for(let j = 0; j < elements[i].elements.length; j++){
+          o2.push(elements[i].elements[j].elements[0].text ? elements[i].elements[j].elements[0].text : elements[i].elements[j].elements[0].cdata)
+        }
+        o[elements[i].name] = o2
+      }else{
+        let o2 = []
+        for(let j = 0; j < elements[i].elements.length; j++){
+          let o3 = {}
+          for(let k = 0; k < elements[i].elements[j].elements.length; k++){
+            o3[elements[i].elements[j].elements[k].name] = elements[i].elements[j].elements[k].elements[0].text ? elements[i].elements[j].elements[k].elements[0].text : elements[i].elements[j].elements[k].elements[0].cdata
+          }
+          o2.push(o3)
+        }
+        o[elements[i].name] = o2
+      }
     }
     return o
   },

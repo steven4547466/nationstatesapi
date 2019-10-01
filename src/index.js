@@ -82,7 +82,6 @@ class Client extends EventEmitter{
   set pin(pin){
     let f = async () => {
       this.userPin = pin
-      if(await this.db.get('pin')) await this.db.delete('pin')
       await this.db.set('pin', pin)
     }
     f()
@@ -94,7 +93,6 @@ class Client extends EventEmitter{
   set autoLogin(key){
     let f = async () => {
       this.aLogin = key
-      if(await this.db.get('key')) await this.db.delete('key')
       await this.db.set('key', key)
       }
     f()
@@ -229,7 +227,7 @@ class Client extends EventEmitter{
           let o = await convert(data).elements[0].elements
           for(let i = 0; i < o.length; i++){
             if(!o[i].elements) continue
-            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" ? o[i].elements[0].text : (o[i].name != "DEATHS" && o[i].name != "CENSUS") ? library.flattenResponse(o[i].elements) : o[i].name != "CENSUS" ? library.getDeathData(o[i].elements) : library.getCensusData(o[i].elements)
+            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" ? (o[i].elements[0].text ? o[i].elements[0].text : o[i].elements[0].cdata) : (o[i].name != "DEATHS" && o[i].name != "CENSUS") ? library.flattenResponse(o[i].elements) : o[i].name != "CENSUS" ? library.getDeathData(o[i].elements) : library.getCensusData(o[i].elements)
           }
           resolve(obj)
         })
@@ -739,7 +737,7 @@ class Client extends EventEmitter{
           let o = await convert(data).elements[0].elements
           for(let i = 0; i < o.length; i++){
             if(!o[i].elements) continue
-            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" && o[i].name != "NATIONS" && o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? o[i].elements[0].text : o[i].name != "CENSUS" && o[i].name != "NATIONS" && o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.flattenResponse(o[i].elements) : o[i].name != "NATIONS" && o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.getCensusData(o[i].elements) : o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.formatNations(o[i].elements[0].text) : o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.formatOfficers(o[i].elements) : o[i].name != "MESSAGES" ? library.formatFactbook(o[i].elements) : library.formatMessages(o[i].elements)
+            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" && o[i].name != "NATIONS" && o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? (o[i].elements[0].text ? o[i].elements[0].text : o[i].elements[0].cdata) : o[i].name != "CENSUS" && o[i].name != "NATIONS" && o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.flattenResponse(o[i].elements) : o[i].name != "NATIONS" && o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.getCensusData(o[i].elements) : o[i].name != "OFFICERS" && o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.formatNations(o[i].elements[0].text) : o[i].name != "FACTBOOK" && o[i].name != "MESSAGES" ? library.formatOfficers(o[i].elements) : o[i].name != "MESSAGES" ? library.formatFactbook(o[i].elements) : library.formatMessages(o[i].elements)
           }
           resolve(obj)
         })
@@ -874,7 +872,7 @@ class Client extends EventEmitter{
           let o = await convert(data).elements[0].elements
           for(let i = 0; i < o.length; i++){
             if(!o[i].elements) continue
-            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? o[i].elements[0].text : o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenResponse(o[i].elements) : o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.getWorldCensusData(o[i].elements) : o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenBanners(o[i].elements) : o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatch(o[i].elements) : o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatchList(o[i].elements) : o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFaction(o[i].elements) : o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFactions(o[i].elements) : o[i].name != "POLL" ? library.flattenHappenings(o[i].elements) : library.flattenPoll(o[i].elements)
+            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? (o[i].elements[0].text ? o[i].elements[0].text : o[i].elements[0].cdata) : o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenResponse(o[i].elements) : o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.getWorldCensusData(o[i].elements) : o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenBanners(o[i].elements) : o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatch(o[i].elements) : o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatchList(o[i].elements) : o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFaction(o[i].elements) : o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFactions(o[i].elements) : o[i].name != "POLL" ? library.flattenHappenings(o[i].elements) : library.flattenPoll(o[i].elements)
           }
           resolve(obj)
         })
@@ -911,7 +909,6 @@ class Client extends EventEmitter{
         method: 'GET'
       }
 
-      console.log(options.path)
   
       let data = ''
       
@@ -928,7 +925,7 @@ class Client extends EventEmitter{
           let o = await convert(data).elements[0].elements
           for(let i = 0; i < o.length; i++){
             if(!o[i].elements) continue
-            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "DELEGATES" && o[i].name != "MEMBERS" && o[i].name != "HAPPENINGS" && o[i].name != "PROPOSALS" ? o[i].elements[0].text : o[i].name != "HAPPENINGS" && o[i].name != "PROPOSALS"  ? o[i].elements[0].text.split(",") : o[i].name != "PROPOSALS" ? library.flattenHappeningsWA(o[i].elements) : library.flattenProposals(o[i].elements)
+            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "DELEGATES" && o[i].name != "MEMBERS" && o[i].name != "HAPPENINGS" && o[i].name != "PROPOSALS" && o[i].name != "RESOLUTION" ? (o[i].elements[0].text ? o[i].elements[0].text : o[i].elements[0].cdata) : o[i].name != "HAPPENINGS" && o[i].name != "PROPOSALS" && o[i].name != "RESOLUTION" ? o[i].elements[0].text.split(",") : o[i].name != "PROPOSALS" && o[i].name != "RESOLUTION" ? library.flattenHappeningsWA(o[i].elements) : o[i].name != "RESOLUTION" ? library.flattenProposals(o[i].elements) : library.flattenResolution(o[i].elements)
           }
           resolve(obj)
         })
@@ -1008,7 +1005,7 @@ class Client extends EventEmitter{
       ERROR: 'error',
       READY: 'ready'
     }
-    this.USERAGENT = 'nsapi@1.0.0'
+    this.USERAGENT = 'nsapi.js@1.0.0'
   }
 
   /**

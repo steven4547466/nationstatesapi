@@ -7,7 +7,7 @@
 let p = require('../../.secrets/password.json')
 let Client = require('../src/index.js')
 let client = new Client()
-let client2 = new Client({login: true, account:{name:"southern mesopotamia"}})
+let client2 = new Client({login: true, account:{name:"southern mesopotamia"/*, password:p.p*/}}) // once you login once you can remove your password until you change it
 async function test(){
   // console.log(await client.getNations())
   // console.log(await client.getNewNations())
@@ -67,7 +67,13 @@ async function test(){
   // console.log((await client.getWorldAssembly(['delegates'])))
   // console.log((await client.getWorldAssembly(['members'])))
   // console.log((await client.getWorldAssembly(['happenings'])))
-  console.log((await client.getWorldAssembly(['proposals'])))
+  // console.log((await client.getWorldAssembly(['proposals'])))
+  // console.log((await client.getWorldAssembly([{type:'resolution', id:'1'}])))
+  // console.log((await client.getWorldAssembly(['resolution', 'voters'])))
+  // console.log((await client.getWorldAssembly(['resolution', 'votetrack'])))
+  // console.log((await client.getWorldAssembly(['resolution', 'dellog'])))
+  // console.log((await client.getWorldAssembly(['resolution', 'delvotes'])))
+  console.log((await client.getWorldAssembly(['lastresolution'])))
   client2.on('ready', async () =>{
     // console.log((await client2.getDossier()).DOSSIER)
     // console.log((await client2.getDossier(1)).DOSSIER)
