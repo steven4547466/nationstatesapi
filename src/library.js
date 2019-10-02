@@ -50,7 +50,7 @@ module.exports = {
     for(let i = 0; i < elements.length; i++){
       let o2 = {}
       for(let j = 0; j < elements[i].elements.length; j++){
-        o2[elements[i].elements[j].name] = elements[i].elements[j].elements[0].text
+        if(elements[i].elements[j].elements) o2[elements[i].elements[j].name] = elements[i].elements[j].elements[0].text
       }
       o.push(o2)
     }
