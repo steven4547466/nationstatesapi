@@ -49,7 +49,7 @@ async function test(){
   // console.log((await client.getRegion("The Milkiest Way", ['power'])))
   // console.log((await client.getRegion("The Milkiest Way", ['scvote'])))
   // console.log((await client.getRegion("The Milkiest Way", ['tags'])))
-  console.log((await client.getRegion("The Milkiest Way", ['zombie'])))
+  // console.log((await client.getRegion("The Milkiest Way", ['zombie'])))
   // console.log(Client.parseAuthorities((await client.getRegion("The Milkiest Way")).DELEGATEAUTH))
   // console.log(Client.parseAuthorities(['World Assembly', 'Executive', 'Communications']))
   // console.log((await client.getWorld([{type:'banner', banner:['c1', 'p9', 't12']}])))
