@@ -3,7 +3,7 @@ module.exports = {
     let o = {}
     if(elements.length == 1 && elements[0].type == "text") return elements[0].text
     for(let i = 0; i < elements.length; i++){
-      o[elements[i].name] = elements[i].elements[0].text
+      elements[i].elements ? o[elements[i].name] = elements[i].elements[0].text ? elements[i].elements[0].text : elements[i].elements[0].cdata : null
     }
     return o
   },
@@ -334,7 +334,7 @@ module.exports = {
     let o = []
     for(let i = 0; i < elements.length; i++){
       let o2 = {}
-      o2.ID = elements[i].attributes.id
+      if(elements[i].attributes) o2.ID = elements[i].attributes.id
       for(let j = 0; j < elements[i].elements.length; j++){
         if(!elements[i].elements[j].elements) continue
         o2[elements[i].elements[j].name] = elements[i].elements[j].elements[0].text ? elements[i].elements[j].elements[0].text : elements[i].elements[j].elements[0].cdata
@@ -354,7 +354,7 @@ module.exports = {
         for(let j = 0; j < elements[i].elements.length; j++){
           let o3 = {}
           for(let k = 0; k < elements[i].elements[j].elements.length; k++){
-            o3[elements[i].elements[j].elements[k].name] = elements[i].elements[j].elements[k].elements[0].text ? elements[i].elements[j].elements[k].elements[0].text : elements[i].elements[j].elements[k].elements[0].cdata
+            elements[i].elements[j].elements[k].elements ? o3[elements[i].elements[j].elements[k].name] = elements[i].elements[j].elements[k].elements[0].text ? elements[i].elements[j].elements[k].elements[0].text : elements[i].elements[j].elements[k].elements[0].cdata : null
           }
           o2[elements[i].elements[j].attributes.id] = o3
         }
@@ -444,6 +444,14 @@ module.exports = {
         }
         o[elements[i].name] = o2
       }
+    }
+    return o
+  },
+
+  formatToArray: (elements) => {
+    let o = []
+    for(let i = 0; i < elements.length; i++){
+      o.push(elements[i].elements[0].text ? elements[i].elements[0].text : elements[i].elements[0].cdata)
     }
     return o
   },
