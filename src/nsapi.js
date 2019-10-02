@@ -505,7 +505,7 @@ class Client extends EventEmitter{
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
-        path: `/cgi-bin/api.cgi?nation=${account.name}&q=notices${from ? `;from=${from.toLowerCase().split(" ").join("_")}` : ``}`,
+        path: `/cgi-bin/api.cgi?nation=${account.name}&q=notices${from ? `;from=${from}` : ``}`,
         headers: {
           'User-Agent': this.USERAGENT,
           'X-Password': account.password || "",
