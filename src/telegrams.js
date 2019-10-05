@@ -20,6 +20,7 @@ class Telegrammer extends EventEmitter{
     this.tgID = tgID
     this.secretKey = sKey
     this.client = client
+    this.forRecruitment = recruitment
     this.nationQueue = []
     this.nationsSent = []
     this.intervals = setInterval(() => {
@@ -154,6 +155,23 @@ class Telegrammer extends EventEmitter{
   }
 
   /**
+   * Checks if the nation next in line can be telegrammed.
+   */
+  checkCanTelegram(){
+    return new Promise(async (resolve, reject) =>{
+      let done = false
+      while(!done){
+        if(!((await this.client.getNation(this.queue[0], [this.forRecruitment ? 'tgcanrecruit' : 'tgcancampaign']))[this.forRecruitment ? 'TGCANRECRUIT' : 'TGCANCAMPAIGN'])){
+          this.nationQueue.shift()
+        }else{
+          done = true
+        }
+      }
+      resolve()
+    })
+  }
+
+  /**
    * Sends the telegram
    */
   async sendTelegram(){
@@ -163,6 +181,7 @@ class Telegrammer extends EventEmitter{
     }
     return new Promise(async (resolve, reject) => {
       await this.checkSent()
+      await this.checkCanTelegram()
       const options = {
         hostname: `www.nationstates.net`,
         port: 443,
