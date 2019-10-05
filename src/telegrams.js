@@ -23,7 +23,7 @@ class Telegrammer extends EventEmitter{
     this.forRecruitment = recruitment
     this.nationQueue = []
     this.nationsSent = []
-    this.intervals = setInterval(() => {
+    this.intervals = setInterval(async () => {
       let nations = await this.client.getNewNations()
       this.nationQueue = this.nationQueue.concat(nations)
     }, 1000 * 60 * 20)
