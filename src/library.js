@@ -1,4 +1,10 @@
 module.exports = {
+  wait: (ms) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(), ms)
+    })
+  },
+
   flattenResponse: (elements) =>{
     let o = {}
     if(elements.length == 1 && elements[0].type == "text") return elements[0].text
@@ -74,12 +80,12 @@ module.exports = {
           if(elements[i].elements[0].name != "POINT"){
             o2[elements[i].elements[j].name] = elements[i].elements[j].elements[0].text
           }else{
-              o2[elements[i].elements[j].elements[0].elements[0].text] = elements[i].elements[j].elements[1].elements[0].text
+            o2[elements[i].elements[j].elements[0].elements[0].text] = elements[i].elements[j].elements[1].elements[0].text
           }
         }
         o[elements[i].attributes.id] = o2
       }else{
-        o[elements[i].attributes.id] = elements[i].elements[0].text
+        o[elements[i].attributes.id] = elements[i].elements[0].text ? elements[i].elements[0].text : elements[i].elements[0].elements[0].text
       }
     }
     return o

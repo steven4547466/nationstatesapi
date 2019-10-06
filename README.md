@@ -1,0 +1,1 @@
+This is an api wrapper for NationStates, it is not completely done and will have bugs until I do real tests in my applications.

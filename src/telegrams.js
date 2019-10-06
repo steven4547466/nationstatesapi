@@ -6,37 +6,36 @@ class Telegrammer extends EventEmitter{
    * @param {String} cKey The client key of the telegram
    * @param {String} tgID The telegram's ID
    * @param {String} sKey The telegram's secret key
-   * @param {boolean} [recruitment = false] true if the telegram is a recruitment telegram defaults to false
+   * @param {Object} [opts = {}] The options
+   * @param {boolean} [opts.recruitment = false]
+   * @param {Integer} [opts.interval = 180000 || 30000]
+   * @param {Array} [opts.sendTo = ['new nations']]
    * @param {nsapi.js Client} client The nsapi.js Client
    */
-  constructor(cKey, tgID, sKey, recruitment = false, client){
+  constructor(cKey, tgID, sKey, opts = {}, client){
     super()
+    if(!opts.recruitment) opts.recruitment = false
+    if(!opts.interval) opts.interval = opts.recruitment ? 180000 : 30000
+    if(opts.recruitment && opts.interval < 180000) throw new Error("Recruitment telegrams can only be sent every 3 minutes or more")
+    if(opts.interval < 30000) throw new Error("You cannot send a telegram faster than once per 30 seconds")
+    if(!opts.sendTo) opts.sendTo = ['new nations']
     if(!cKey || typeof cKey !== "string") throw new Error("Telegram client key is missing or is not a string.")
     if(!tgID || typeof tgID !== "string") throw new Error("Telegram ID is missing or is not a string.")
     if(!sKey || typeof sKey !== "string") throw new Error("Telegram secret key is missing or is not a string.")
-    if(typeof recruitment !== "boolean") throw new Error("Telegram type is now a boolean")
-    if(!this.checkClient(client)) throw new Error("Client provided for telegram is not a nsapi.js client")
+    if(typeof opts.recruitment !== "boolean") throw new Error("Telegram type is not a boolean")
+    if(!this.checkClient(client) && !opts.testing) throw new Error("Client provided for telegram is not a nsapi.js client")
     this.clientKey = cKey
     this.tgID = tgID
     this.secretKey = sKey
     this.client = client
-    this.forRecruitment = recruitment
+    this.forRecruitment = opts.recruitment
     this.nationQueue = []
     this.nationsSent = []
-    this.intervals = setInterval(async () => {
-      let nations = await this.client.getNewNations()
-      this.nationQueue = this.nationQueue.concat(nations)
-    }, 1000 * 60 * 20)
+    this.sendTo = opts.sendTo
     this.sendTelegram()
-    if(recruitment){
-      this.intervals = setInterval(() => {
-        this.sendTelegram()
-      }, 1000 * 60 * 3)
-    }else{
-      this.intervals = setInterval(() => {
-        this.sendTelegram()
-      }, 1000 * 30)
-    }
+    this.intervals = setInterval(() => {
+      this.sendTelegram()
+    }, opts.interval)
   }
 
   /**
@@ -172,12 +171,123 @@ class Telegrammer extends EventEmitter{
   }
 
   /**
+   * Shuffles an array
+   */
+  shuffleArray(arr){
+    let currentIndex = arr.length, temporaryValue, randomIndex
+    while (currentIndex != 0) {
+      randomIndex = ~~(Math.random() * currentIndex)
+      currentIndex--
+      temporaryValue = arr[currentIndex]
+      arr[currentIndex] = arr[randomIndex]
+      arr[randomIndex] = temporaryValue
+    }
+    return arr
+  }
+
+  /**
+   * Gets nations based on what the telegram options are
+   */
+  async getNations(){
+    return new Promise(async (resolve, reject) => {
+      for(let i = 0; i < this.sendTo.length; i++){
+        if(typeof this.sendTo[i] == "string"){
+          switch(this.sendTo[i]){
+            case 'new nations':
+              this.nationQueue = this.nationQueue.concat(this.shuffleArray(await this.client.getNewNations()))
+              break
+            case 'refounded nations':
+              this.nationQueue = this.nationQueue.concat(this.shuffleArray(await this.client.getRefoundedNations()))
+              break
+            case 'delegates':
+              this.nationQueue = this.nationQueue.concat(this.shuffleArray(((await this.client.getWorldAssembly(['delegates'])).DELEGATES)))
+              break
+            case 'wa members':
+              this.nationQueue = this.nationQueue.concat(this.shuffleArray(((await this.client.getWorldAssembly(['members'])).MEMBERS)))
+              break
+          }
+        }
+      }
+      let sendTo = this.sendTo.filter(t => typeof t == "object")
+      let types = sendTo.map(t => t.type)
+      if(types.indexOf('regions') != -1){
+        let index = types.indexOf('regions')
+        let regions = sendTo[index].regions
+        if(!regions) return reject("No regions")
+        for(let i = 0; i < regions.length; i++){
+          let members = ((await this.client.getRegion(regions[i], ['nations'])).NATIONS).map(t => t.toLowerCase().split(' ').join('_'))
+          this.nationQueue = this.nationQueue.concat(members)
+        }
+      }
+      if(types.indexOf('tags') != -1){
+        let index = types.indexOf('tags')
+        let tags = sendTo[index].tags.map(t => t.toLowerCase())
+        if(!tags) return reject("No tags")
+        let tempregions = (await this.client.getWorld([{type:'regionsbytag', tags:tags.join(',')}])).REGIONS
+        let regions = []
+        for(let i = 0; i < 10; i++){
+          regions.push(tempregions[~~(Math.random() * tempregions.length)])
+        }
+        for(let i = 0; i < regions.length; i++){
+          let members = ((await this.client.getRegion(regions[i], ['nations'])).NATIONS).map(t => t.toLowerCase().split(' ').join('_'))
+          this.nationQueue = this.nationQueue.concat(members)
+        }
+      }
+      if(types.indexOf('categories') != -1){
+        if(this.nationQueue.length <= 0) this.nationQueue = this.client.getNewNations()
+        let index = types.indexOf('categories')
+        let categories = sendTo[index].categories.map(t => t.toLowerCase())
+        if(!categories) return reject("No categories")
+        let nations = []
+        for(let i = 0; i < this.nationQueue.length; i++){
+          let category = (await this.client.getNation(this.nationQueue[i], ['category'])).CATEGORY.toLowerCase()
+          if(categories.includes(category)) nations.push(this.nationQueue[i])
+        }
+        this.nationQueue = nations
+      }
+      if(types.indexOf('census') != -1){
+        if(this.nationQueue.length <= 0) this.nationQueue = this.client.getNewNations()
+        let index = types.indexOf('census')
+        if(!sendTo[index].between) return reject("Census must have a 'between' value")
+        if(!sendTo[index].id) return reject("Census must have an 'id' value")
+        let arr = sendTo[index].between.split('-').map(t => Number(t))
+        let nations = []
+        for(let i = 0; i < this.nationQueue.length; i++){
+          let nation = await this.client.getNation(this.nationQueue[i], [{scale:[sendTo[index].id], mode:['score']}])
+          if(nation.CENSUS[sendTo[index].id] >= arr[0] && nation.CENSUS[sendTo[index].id] <= arr[1]){
+            nations.push(this.nationQueue[i])
+          }
+        }
+        this.nationQueue = nations
+      }
+      if(types.indexOf('censuses') != -1){
+        if(this.nationQueue.length <= 0) this.nationQueue = this.client.getNewNations()
+        let index = types.indexOf('censuses')
+        for(let i = 0; i < sendTo[index].censuses.length; i++){
+          if(!sendTo[index].censuses[i].between) throw new Error("Census must have a 'between' value")
+          if(!sendTo[index].censuses[i].id) throw new Error("Census must have a 'id' value")
+          let arr = sendTo[index].censuses[i].between.split('-').map(t => Number(t))
+          let nations = []
+          for(let j = 0; j < this.nationQueue.length; j++){
+            let nation = await this.client.getNation(this.nationQueue[j], [{scale:[sendTo[index].censuses[i].id], mode:['score']}])
+            if(nation.CENSUS[sendTo[index].censuses[i].id] >= arr[0] && nation.CENSUS[sendTo[index].censuses[i].id] <= arr[1]){
+              nations.push(this.nationQueue[j])
+            }
+          }
+          this.nationQueue = nations
+        }
+      }
+      console.log(this.nationQueue)
+      resolve()
+    })
+  }
+
+  /**
    * Sends the telegram
    */
   async sendTelegram(){
-    if(this.queue.length <= 0){
-      let nations = await this.client.getNewNations()
-      this.nationQueue = nations
+    if(!this.queue[0]){
+      await this.getNations()
     }
     return new Promise(async (resolve, reject) => {
       await this.checkSent()

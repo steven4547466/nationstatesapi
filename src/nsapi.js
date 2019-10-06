@@ -157,13 +157,15 @@ class Client extends EventEmitter{
    * @param {String} cKey The client key of the telegram
    * @param {String} tgID The telegram's ID
    * @param {String} sKey The telegram's secret key
-   * @param {boolean} [recruitment = false] true if the telegram is a recruitment telegram defaults to false
+   * @param {Object} [opts = {}] The options
+   * @param {boolean} [opts.recruitment = false]
+   * @param {Array} [opts.sendTo = ['new nations']]
    */
-  addTelegram(cKey, tgID, sKey, recruitment){
+  addTelegram(cKey, tgID, sKey, opts){
     if(!Telegram){
       Telegram = require('./telegrams.js')
     }
-    this.telegrams = new Telegram(cKey, tgID, sKey, recruitment, this)
+    this.telegrams = new Telegram(cKey, tgID, sKey, opts, this)
   }
 
   /**
@@ -195,7 +197,10 @@ class Client extends EventEmitter{
    * @returns {Promise<Object>} 
    */
   getNation(nation, opts = []){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      if(!nation){ 
+        return reject("No nation provided")
+      }
       nation = nation.toLowerCase().split(" ").join("_")
       for(let i = 0; i < opts.length; i++){
         if(typeof opts[i] == "object"){
@@ -214,7 +219,6 @@ class Client extends EventEmitter{
       }
   
       let data = ''
-      
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting nation, status code: ${res.statusCode}`)
         if(res.statusCode == 404) reject("Not found")
@@ -250,7 +254,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -264,6 +268,7 @@ class Client extends EventEmitter{
         method: 'GET'
       }
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting dossier, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -300,7 +305,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -315,6 +320,7 @@ class Client extends EventEmitter{
       }
         
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting issues, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -351,7 +357,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -366,6 +372,7 @@ class Client extends EventEmitter{
       }
         
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting issue summary, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -402,7 +409,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -417,6 +424,7 @@ class Client extends EventEmitter{
       }
         
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting next issue time, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -451,7 +459,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -466,6 +474,7 @@ class Client extends EventEmitter{
       }
         
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting next issue time, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -501,7 +510,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -515,6 +524,7 @@ class Client extends EventEmitter{
         method: 'GET'
       }
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting notices, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -552,7 +562,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -565,6 +575,7 @@ class Client extends EventEmitter{
         },
         method: 'GET'
       }
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Pinging nation, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -596,7 +607,7 @@ class Client extends EventEmitter{
     await this.db.defer
     let account = this.account
     
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -610,6 +621,7 @@ class Client extends EventEmitter{
         method: 'GET'
       }
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting rdossier, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -646,7 +658,7 @@ class Client extends EventEmitter{
     if(!this.loginb) throw new Error("You must be logged in to do this")
     await this.db.defer
     let account = this.account
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -660,6 +672,7 @@ class Client extends EventEmitter{
         method: 'GET'
       }
       let data = ''
+      await library.wait(650)
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting unread notifications, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
@@ -699,7 +712,7 @@ class Client extends EventEmitter{
    * @returns {Promise<Object>} 
    */
   getRegion(region, opts = []){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       region = region.toLowerCase().split(" ").join("_")
       for(let i = 0; i < opts.length; i++){
         if(typeof opts[i] == "object"){
@@ -723,6 +736,7 @@ class Client extends EventEmitter{
       }
 
       let data = ''
+      await library.wait(650)
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting region, status code: ${res.statusCode}`)
@@ -768,7 +782,7 @@ class Client extends EventEmitter{
    * @returns {Promise<Array>}
    */
   getNewNations(limit = 50){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -780,6 +794,7 @@ class Client extends EventEmitter{
       }
   
       let data = ''
+      await library.wait(650)
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting new nations, status code: ${res.statusCode}`)
@@ -806,11 +821,23 @@ class Client extends EventEmitter{
   }
 
   /**
+   * Gets new nations
+   * @returns {Promise<Array>}
+   */
+  getRefoundedNations(){
+    return new Promise(async (resolve, reject) => {
+      let arr = (await this.getWorld([{type:'happenings', filter:['founding']}])).HAPPENINGS
+      arr = arr.filter(t => t.TEXT.toLowerCase().includes('refounded')).map(t => t.TEXT.split("@@")[1])
+      resolve(arr)
+    })
+  }
+
+  /**
    * Gets all nations
    * @returns {Promise<Array>}
    */
   getNations(){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -822,6 +849,7 @@ class Client extends EventEmitter{
       }
   
       let data = ''
+      await library.wait(650)
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting nations, status code: ${res.statusCode}`)
@@ -852,7 +880,7 @@ class Client extends EventEmitter{
    * @returns {Promise<Object>}
    */
   getWorld(opts = []){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       opts = library.formatOptionsWorld(opts)
       const options = {
         hostname: 'www.nationstates.net',
@@ -865,6 +893,7 @@ class Client extends EventEmitter{
       }
 
       let data = ''
+      await library.wait(650)
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting world data, status code: ${res.statusCode}`)
@@ -879,7 +908,7 @@ class Client extends EventEmitter{
           let o = await convert(data).elements[0].elements
           for(let i = 0; i < o.length; i++){
             if(!o[i].elements) continue
-            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? (o[i].elements[0].text ? o[i].elements[0].text : o[i].elements[0].cdata) : o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenResponse(o[i].elements) : o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.getWorldCensusData(o[i].elements) : o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenBanners(o[i].elements) : o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatch(o[i].elements) : o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatchList(o[i].elements) : o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFaction(o[i].elements) : o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFactions(o[i].elements) : o[i].name != "POLL" ? library.flattenHappenings(o[i].elements) : library.flattenPoll(o[i].elements)
+            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? (o[i].elements[0].text ? o[i].elements[0].text.includes(',') ? o[i].elements[0].text.split(',') : o[i].elements[0].text : o[i].elements[0].cdata) : o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenResponse(o[i].elements) : o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.getWorldCensusData(o[i].elements) : o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenBanners(o[i].elements) : o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatch(o[i].elements) : o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatchList(o[i].elements) : o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFaction(o[i].elements) : o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFactions(o[i].elements) : o[i].name != "POLL" ? library.flattenHappenings(o[i].elements) : library.flattenPoll(o[i].elements)
           }
           resolve(obj)
         })
@@ -903,7 +932,7 @@ class Client extends EventEmitter{
    * @returns {Promise<Object>}
    */
   getWorldAssembly(opts = []){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let wa = Number.isInteger(parseInt(opts[0])) ? parseInt(opts[0]) : 1
       opts = library.formatOptionsWA(opts)
       const options = {
@@ -918,6 +947,7 @@ class Client extends EventEmitter{
 
   
       let data = ''
+      await library.wait(650)
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting WA Data, status code: ${res.statusCode}`)
@@ -956,7 +986,7 @@ class Client extends EventEmitter{
    * @param {Object} account Account username/password
    */
   login(account){
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const options = {
         hostname: 'www.nationstates.net',
         port: 443,
@@ -969,6 +999,7 @@ class Client extends EventEmitter{
         },
         method: 'GET'
       }
+      await library.wait(650)
         
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Logging in, status code: ${res.statusCode}`)
@@ -1063,7 +1094,7 @@ module.exports.Client = Client
   //   if(!this.loginb) throw new Error("You must be logged in to do this")
   //   await this.db.defer
   //   let account = this.account
-  //   return new Promise((resolve, reject) => {
+  //   return new Promise(async (resolve, reject) => {
   //     const options = {
   //       hostname: 'www.nationstates.net',
   //       port: 443,
