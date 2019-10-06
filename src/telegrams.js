@@ -160,7 +160,8 @@ class Telegrammer extends EventEmitter{
     return new Promise(async (resolve, reject) =>{
       let done = false
       while(!done){
-        if(!((await this.client.getNation(this.queue[0], [this.forRecruitment ? 'tgcanrecruit' : 'tgcancampaign']))[this.forRecruitment ? 'TGCANRECRUIT' : 'TGCANCAMPAIGN'])){
+        let canTG = (await this.client.getNation(this.queue[0], [this.forRecruitment ? 'tgcanrecruit' : 'tgcancampaign']))[this.forRecruitment ? 'TGCANRECRUIT' : 'TGCANCAMPAIGN'] || false
+        if(!canTG){
           this.nationQueue.shift()
         }else{
           done = true
@@ -302,16 +303,10 @@ class Telegrammer extends EventEmitter{
       }
 
       this.sentTo.push(this.queue[0])
-  
-      let data = ''
       
       const req = https.request(options, (res) => {
         this.client.emit(this.client.events.DEBUG, `Telegram status code: ${res.statusCode}`)
         
-        res.on('data', (d) => {
-          data += d
-        })
-  
         res.on('end', async () => {
           resolve()
         })
