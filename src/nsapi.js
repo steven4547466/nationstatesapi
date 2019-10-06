@@ -236,7 +236,7 @@ class Client extends EventEmitter{
       let data = ''
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting nation, status code: ${res.statusCode}`)
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         res.on('data', (d) => {
           data += d
         })
@@ -288,9 +288,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting dossier, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -306,7 +306,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -340,9 +340,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting issues, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -358,7 +358,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -392,9 +392,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting issue summary, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -410,7 +410,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -444,9 +444,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting next issue time, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -460,7 +460,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -494,9 +494,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting next issue time, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -510,7 +510,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -544,9 +544,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting notices, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -555,7 +555,7 @@ class Client extends EventEmitter{
         res.on('end', async () => {
           let obj = {}
           let o = await convert(data).elements[0].elements
-          if(!o[0].elements) reject("No notices.")
+          if(!o[0].elements) return reject("No notices.")
           obj[o[0].name] = library.flattenNotices(o[0].elements)
           resolve(obj)
         })
@@ -563,7 +563,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -597,7 +597,7 @@ class Client extends EventEmitter{
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
           resolve(false)
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200){
           this.setPinAndAutoLogin(res.headers)
           resolve(true)
@@ -606,7 +606,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -641,9 +641,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting rdossier, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -659,7 +659,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -692,9 +692,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Getting unread notifications, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
         res.on('data', (d) => {
           data += d
@@ -710,7 +710,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -755,7 +755,7 @@ class Client extends EventEmitter{
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting region, status code: ${res.statusCode}`)
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
       
         res.on('data', (d) => {
           data += d
@@ -781,7 +781,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -813,7 +813,7 @@ class Client extends EventEmitter{
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting new nations, status code: ${res.statusCode}`)
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
       
         res.on('data', (d) => {
           data += d
@@ -829,7 +829,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -868,7 +868,7 @@ class Client extends EventEmitter{
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting nations, status code: ${res.statusCode}`)
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
       
         res.on('data', (d) => {
           data += d
@@ -883,7 +883,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -912,7 +912,7 @@ class Client extends EventEmitter{
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting world data, status code: ${res.statusCode}`)
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
       
         res.on('data', (d) => {
           data += d
@@ -931,7 +931,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -966,7 +966,7 @@ class Client extends EventEmitter{
       
       const req = https.request(options, (res) => {
         this.emit(this.events.DEBUG, `Getting WA Data, status code: ${res.statusCode}`)
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
       
         res.on('data', (d) => {
           data += d
@@ -985,7 +985,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -1022,9 +1022,9 @@ class Client extends EventEmitter{
         this.emit(this.events.DEBUG, `Logging in, status code: ${res.statusCode}`)
         if(res.statusCode == 403){ 
           this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-          reject("Failed to login")
+          return reject("Failed to login")
         }
-        if(res.statusCode == 404) reject("Not found")
+        if(res.statusCode == 404) return reject("Not found")
         if(res.statusCode == 200){
           this.setPinAndAutoLogin(res.headers)
           this.emit(this.events.READY)
@@ -1034,7 +1034,7 @@ class Client extends EventEmitter{
       
       req.on('error', (e) => {
         this.client.emit(this.events.ERROR, e)
-        reject(e)
+        return reject(e)
       })
       req.end()
     })
@@ -1129,7 +1129,7 @@ module.exports.Client = Client
   //       this.emit(this.events.DEBUG, `Addressing issue, status code: ${res.statusCode}`)
   //       if(res.statusCode == 403){ 
         //   this.emit(this.events.ERROR, `Pin, Password and Auto login declined. Please provide a new password to login.`)
-        //   reject("Failed to login")
+        //   return reject("Failed to login")
         // }
   //       if(res.statusCode == 200) this.setPinAndAutoLogin(res.headers)
   //       res.on('data', (d) => {
@@ -1145,7 +1145,7 @@ module.exports.Client = Client
       
   //     req.on('error', (e) => {
   //       this.client.emit(this.events.ERROR, e)
-  //       reject(e)
+  //       return reject(e)
   //     })
   //     req.write(`nation=${account.name}&c=issue&issue=${issue}&option=${option}`)
   //     req.end()

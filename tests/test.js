@@ -22,7 +22,7 @@ async function test(){
   // await client.getNation("southern mesopotamia", ['census'])
   // console.log(await client.getNation("southern mesopotamia", [{scale:['22', '44'], mode:['score']}]))
   // console.log(await client.getNation("southern mesopotamia", [{scale:['22', '44'], mode:[{from:"1", to:new Date().getTime()}]}])) // using from/to will retun only score regardless.
-  // client.addTelegram('xxxxx', 'xxxxx', 'xxxxxx', {recruitment:true, testing:true, sendTo:['refounded nations', 'new nations']})
+  client.addTelegram('xxxxx', 'xxxxx', 'xxxxxx', {recruitment:true, testing:true, sendTo:['refounded nations', 'new nations']})
   // client.addTelegram('xxxxx', 'xxxxx', 'xxxxxx', {recruitment:true, testing:true, sendTo:['delegates']})
   // client.addTelegram('xxxxx', 'xxxxx', 'xxxxxx', {recruitment:true, testing:true, sendTo:['wa members']})
   // client.addTelegram('xxxxx', 'xxxxx', 'xxxxxx', {recruitment:true, testing:true, sendTo:['refounded nations', {type: 'census', between:'0-50', id:'0'}]})

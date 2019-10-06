@@ -277,7 +277,6 @@ class Telegrammer extends EventEmitter{
           this.nationQueue = nations
         }
       }
-      console.log(this.nationQueue)
       resolve()
     })
   }
