@@ -56,6 +56,11 @@ class Client extends EventEmitter{
 
   /**
    * Set the Client options
+   * @param {Object} options Options for the Client
+   * @param {boolean} options.login Whether or not to login to a user account (required for use of private shards)
+   * @param {Object} options.account The account details to login (required when logging in)
+   * @param {String} options.account.password The password of the account (nation)
+   * @param {String} options.account.name The name of the account (nation)
    */
   set options(options){
     this.opts = options
@@ -63,6 +68,9 @@ class Client extends EventEmitter{
 
   /**
    * Set the account details
+   * @param {Object} account The account
+   * @param {String} account.password The password of the account (nation)
+   * @param {String} account.name The name of the account (nation)
    */
   set account(account){
     this.acc = account
@@ -70,6 +78,7 @@ class Client extends EventEmitter{
 
   /**
    * Set a telegram
+   * @param {Telegam} tg A telegram, must be from the telegram class
    */
   set telegrams(tg){
     if(!this.tgs) this.tgs = []
@@ -78,6 +87,7 @@ class Client extends EventEmitter{
 
   /**
    * Sets the user's pin
+   * @param {Integer} pin The pin returned from the X-Pin header
    */
   set pin(pin){
     let f = async () => {
@@ -89,6 +99,7 @@ class Client extends EventEmitter{
 
   /**
    * Sets the auto login
+   * @param {String} key The auto login string returned by the X-Autologin header
    */
   set autoLogin(key){
     let f = async () => {
@@ -100,6 +111,7 @@ class Client extends EventEmitter{
 
   /**
    * Logged in?
+   * @param {boolean} b True for logged in false if otherwise
    */
   set loggedIn(b){
     this.logged = b
@@ -123,7 +135,7 @@ class Client extends EventEmitter{
 
   /**
    * Get all the telegrams
-   * @returns {Array}
+   * @returns {(Array|null)}
    */
   get telegrams(){
     return this.tgs || null
@@ -131,6 +143,7 @@ class Client extends EventEmitter{
 
   /**
    * Gets the user's pin
+   * @returns {Integer}
    */
   get pin(){
     return this.userPin
@@ -138,6 +151,7 @@ class Client extends EventEmitter{
 
   /**
    * Gets the auto login
+   * @returns {String}
    */
   get autoLogin(){
     return this.aLogin
@@ -145,6 +159,7 @@ class Client extends EventEmitter{
 
   /**
    * Logged in?
+   * @returns {boolean}
    */
   get loggedIn(){
     return this.logged
@@ -876,7 +891,7 @@ class Client extends EventEmitter{
 
   /**
    * Get data from world shards
-   * @param {Array} opts Can include one or several banner (configurable see docs), census (configurable see docs), censusid, censusdesc (configurable see docs), censusname (configurable see docs), censusranks (configurable see docs), censusscale (configurable see docs), censustitle (configurable see docs), dispatch (configurable see docs), dispatchlist (configurable see docs), faction, factions, featuredregion, happenings (configurable see docs), lasteventid, numnations, numregions, poll (configurable see docs), regions, regionsbytag (configurable see docs), tgqueue
+   * @param {Array} [opts = []] Can include one or several banner (configurable see docs), census (configurable see docs), censusid, censusdesc (configurable see docs), censusname (configurable see docs), censusranks (configurable see docs), censusscale (configurable see docs), censustitle (configurable see docs), dispatch (configurable see docs), dispatchlist (configurable see docs), faction, factions, featuredregion, happenings (configurable see docs), lasteventid, numnations, numregions, poll (configurable see docs), regions, regionsbytag (configurable see docs), tgqueue
    * @returns {Promise<Object>}
    */
   getWorld(opts = []){
@@ -983,7 +998,9 @@ class Client extends EventEmitter{
 
   /**
    * Login to nationstates to access private shards. After you login once, you can remove your password from your code until you change it.
-   * @param {Object} account Account username/password
+   * @param {Object} account
+   * @param {String} account.name The account's name
+   * @param {String} [account.password] The account's password
    */
   login(account){
     return new Promise(async (resolve, reject) => {
