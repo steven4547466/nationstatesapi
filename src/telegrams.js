@@ -37,6 +37,7 @@ class Telegrammer extends EventEmitter{
     this.nationQueue = []
     this.nationsSent = []
     this.sendTo = opts.sendTo
+    this.testing = opts.testing
     this.sendTelegram()
     this.intervals = setInterval(() => {
       this.sendTelegram()
@@ -142,7 +143,8 @@ class Telegrammer extends EventEmitter{
 
   /**
    * Ensures the client is a proper instance of a nsapi.js Client
-   * @param {Client} client The nsapi.js client
+   * @param {Client} client The nsapi.js Client
+   * @returns {boolean} Whether the provided object is an nsapi.js Client
    */
   checkClient(client){
     const c = require.cache[require.resolve('nsapi.js')]
@@ -257,7 +259,7 @@ class Telegrammer extends EventEmitter{
           let category = (await this.client.getNation(this.nationQueue[i], ['category'])).CATEGORY.toLowerCase()
           if(categories.includes(category)) nations.push(this.nationQueue[i])
         }
-        this.nationQueue = nations
+        this.nationQueue = this.nationQueue.concat(nations)
       }
       if(types.indexOf('census') != -1){
         if(this.nationQueue.length <= 0) this.nationQueue = this.client.getNewNations()
@@ -272,7 +274,7 @@ class Telegrammer extends EventEmitter{
             nations.push(this.nationQueue[i])
           }
         }
-        this.nationQueue = nations
+        this.nationQueue = this.nationQueue.concat(nations)
       }
       if(types.indexOf('censuses') != -1){
         if(this.nationQueue.length <= 0) this.nationQueue = this.client.getNewNations()
@@ -288,7 +290,7 @@ class Telegrammer extends EventEmitter{
               nations.push(this.nationQueue[j])
             }
           }
-          this.nationQueue = nations
+          this.nationQueue = this.nationQueue.concat(nations)
         }
       }
       resolve()
@@ -301,6 +303,10 @@ class Telegrammer extends EventEmitter{
   async sendTelegram(){
     if(!this.queue[0]){
       await this.getNations()
+    }
+    if(this.testing){ 
+      this.client.emit(this.client.events.DEBUG, this.queue)
+      return
     }
     return new Promise(async (resolve, reject) => {
       await this.checkSent()
