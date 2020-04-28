@@ -1,10 +1,157 @@
+/** Typedefs
+ * 
+ * @typedef {Object} AccountDetails
+ * @param {String} [password] The password of the account (nation)
+ * @param {Nation} [name] The name of the account (nation)
+ * 
+ * @typedef {Object} ClientOptions
+ * @param {boolean} [login = false] Whether or not to login to a user account (required for use of private shards)
+ * @param {AccountDetails} [account] The account details to login (required when logging in)
+ * 
+ * The status of a member in the World Assembly, must be one of:
+ * * WA Delegate
+ * * WA Member
+ * * Non-member
+ * @typedef {String} UNStatus
+ * 
+ * The status of a nation's civil rights, must be one of:
+ * * Outlawed
+ * * Unheard Of
+ * * Rare
+ * * Few
+ * * Some
+ * * Below Average
+ * * Average
+ * * Good
+ * * Very Good
+ * * Excellent
+ * * Superb
+ * * World Benchmark
+ * * Excessive
+ * * Frightening
+ * * Widely Abused
+ * @typedef {String} NationCivilFreedomsStrings
+ * 
+ * The status of a nation's civil rights, must be one of:
+ * * Imploded
+ * * Basket Case
+ * * Fragile
+ * * Weak
+ * * Struggling
+ * * Developing
+ * * Reasonable
+ * * Fair
+ * * Good
+ * * Strong
+ * * Very Strong
+ * * Thriving
+ * * Powerhouse
+ * * All Consuming
+ * * Frightening
+ * @typedef {String} NationEconomicFreedomsStrings
+ * 
+ * The status of a nation's civil rights, must be one of:
+ * * Outlawed
+ * * Unheard Of
+ * * Rare
+ * * Few
+ * * Some
+ * * Below Average
+ * * Average
+ * * Good
+ * * Very Good
+ * * Excellent
+ * * Superb
+ * * World Benchmark
+ * * Excessive
+ * * Widely Abused
+ * * Corrupted
+ * @typedef {String} NationPoliticalFreedomsStrings
+ * 
+ * @typedef {Object} NationFreedoms
+ * @param {NationCivilFreedomsStrings} CIVILRIGHTS
+ * @param {NationEconomicFreedomsStrings} ECONOMY
+ * @param {NationPoliticalFreedomsStrings} POLITICALFREEDOM
+ * 
+ * @typedef {Object} NationGovernmentAllocations
+ * @param {String} ADMINISTRATION The percent of allocated funds to administration
+ * @param {String} DEFENCE The percent of allocated funds to defence
+ * @param {String} EDUCATION The percent of allocated funds to education
+ * @param {String} ENVIRONMENT The percent of allocated funds to environmental beauty
+ * @param {String} HEALTHCARE The percent of allocated funds to health care
+ * @param {String} COMMERCE The percent of allocated funds to commerce
+ * @param {String} INTERNATIONALAID The percent of allocated funds to international aid
+ * @param {String} LAWANDORDER The percent of allocated funds to law and order
+ * @param {String} PUBLICTRANSPORT The percent of allocated funds to public transportation
+ * @param {String} SOCIALEQUALITY The percent of allocated funds to social equality
+ * @param {String} SPIRITUALITY The percent of allocated funds to spirituality
+ * @param {String} WELFARE The percent of allocated funds to welfare
+ * 
+ * @typedef {Object} FreedomScores
+ * @param {String} CIVILRIGHTS The nation's civil rights raw score
+ * @param {String} ECONOMY: The nation's economic raw score
+ * @param {String} POLITICALFREEDOM: The nation's political freedom raw score
+ * 
+ * @typedef {Object<String, String>} NationCauseOfDeaths
+ * 
+ * @typedef {Object} NationObject
+ * @param {String} NAME The name of the nation
+ * @param {String} TYPE The type of the nation
+ * @param {String} FULLNAME The full name of the nation
+ * @param {String} MOTTO The motto of the nation
+ * @param {String} CATEGORY The category of the nation
+ * @param {UNStatus} UNSTATUS The status of this nation in the World Assembly
+ * @param {NationFreedoms} FREEDOM The nation's freedom statuses
+ * @param {Region} REGION The region this nation belongs to
+ * @param {String} POPULATION The population of the nation
+ * @param {String} TAX The tax rate of the nation
+ * @param {String} ANIMAL The national animal of the nation
+ * @param {String} CURRENCY The currency of the nation
+ * @param {String} DEMONYM The first demonym of the nation
+ * @param {String} DEMONYM2 The second demonym of the nation
+ * @param {String} DEMONYM2PLURAM The plural form of the demonym
+ * @param {String} FLAG A url to the flag of the nation
+ * @param {String} MAJORINDUSTRY The major industry of the nation
+ * @param {String} GOVTPRIORITY The priority of the governmet of the nation
+ * @param {NationGovernmentAllocations} GOVT The allocation of funds of the nation
+ * @param {String} FOUNDED A string that states how long ago the nation was founded, ex "2 years, 157 days ago"
+ * @param {String} FIRSTLOGIN The timestamp of the nation's first login
+ * @param {String} LASTLOGIN The timestamp of the nation's last login
+ * @param {String} LASTACTIVITY A string that states how long ago the nation took an action, ex "5 days ago"
+ * @param {FreedomScores} FREEDOMSCORES The freedom scores of the nation
+ * @param {String} PUBLICSECTOR The public sector score (This is undocumented in the NS API)
+ * @param {NationCauseOfDeaths} DEATHS The causes of death in the nation
+ * @param {String} LEADER The leader of the nation
+ * @param {String} CAPITAL The capital of the nation
+ * @param {String} RELIGION The religion of the nation
+ * @param {String} FACTBOOKS The number of factbooks the nation has
+ * @param {String} DISPATCHES The number of dispatches the nation has
+ * @param {String} DBID (This is undocumented in the NS API)
+ * 
+ * @typedef {Object} RegionObject
+ * @param {Region} NAME The name of the region
+ * @param {FactbookEntry[]} FACTBOOK The factbooks of the region
+ * @param {String} NUMNATIONS The number of nations in the region
+ * @param {Nation[]} NATIONS The nations in the region
+ * @param {Nation} DELEGATE The delegate of the region
+ * @param {String} DELEGATEVOTES The weight of the delegate's votes in the world assembly
+ * @param {String} DELEGATEAUTH The delegate authority
+ * @param {Nation} FOUNDER The founder of the region
+ * @param {String} FOUNDERAUTH The founder authority
+ * @param {Officer[]} OFFICERS The officers of the region
+ * @param {String} POWER The power of the region, ex "Low"
+ * @param {String} FLAG A URL to the flag of the region
+ * @param {Region[]} EMBASSIES The embassies of the region
+ * @param {String} LASTUPDATE The last update to the region as a timestamp
+ */
+
 const https = require('https')
 const EventEmitter = require('events')
 let Telegram = null
 const convert = require('xml-js').xml2js
 const enmap = require('enmap')
 const library = require('./library.js')
-let authorities = {
+const authorities = {
   X: "Executive",
   W: "World Assembly",
   A: "Appearance",
@@ -13,14 +160,11 @@ let authorities = {
   E: "Embassies",
   P: "Polls"
 }
+
 class Client extends EventEmitter{
   /**
    * Creates a new nsapi.js client
-   * @param {Object} [options] Options for the Client
-   * @param {boolean} [options.login = false] Whether or not to login to a user account (required for use of private shards)
-   * @param {Object} [options.account] The account details to login (required when logging in)
-   * @param {String} [options.account.password] The password of the account (nation)
-   * @param {String} [options.account.name] The name of the account (nation)
+   * @param {ClientOptions} [ClientOptions] Options for the Client
    */
   constructor(options = {}){
     super()
@@ -56,11 +200,7 @@ class Client extends EventEmitter{
 
   /**
    * Set the Client options
-   * @param {Object} options Options for the Client
-   * @param {boolean} options.login Whether or not to login to a user account (required for use of private shards)
-   * @param {Object} options.account The account details to login (required when logging in)
-   * @param {String} options.account.password The password of the account (nation)
-   * @param {String} options.account.name The name of the account (nation)
+   * @param {ClientOptions} ClientOptions Options for the Client
    */
   set options(options){
     this.opts = options
@@ -68,9 +208,7 @@ class Client extends EventEmitter{
 
   /**
    * Set the account details
-   * @param {Object} account The account
-   * @param {String} account.password The password of the account (nation)
-   * @param {String} account.name The name of the account (nation)
+   * @param {AccountDetails} account The account
    */
   set account(account){
     this.acc = account
@@ -87,7 +225,7 @@ class Client extends EventEmitter{
 
   /**
    * Sets the user's pin
-   * @param {Integer} pin The pin returned from the X-Pin header
+   * @param {number} pin The pin returned from the X-Pin header
    */
   set pin(pin){
     let f = async () => {
@@ -127,7 +265,7 @@ class Client extends EventEmitter{
 
   /**
    * Get the account details
-   * @returns {Object}
+   * @returns {AccountDetails}
    */
   get account(){
     return this.acc
@@ -143,7 +281,7 @@ class Client extends EventEmitter{
 
   /**
    * Gets the user's pin
-   * @returns {Integer}
+   * @returns {number}
    */
   get pin(){
     return this.userPin
@@ -172,9 +310,7 @@ class Client extends EventEmitter{
    * @param {String} cKey The client key of the telegram
    * @param {String} tgID The telegram's ID
    * @param {String} sKey The telegram's secret key
-   * @param {Object} [opts = {}] The options
-   * @param {boolean} [opts.recruitment = false]
-   * @param {Array} [opts.sendTo = ['new nations']]
+   * @param {TelegramOptions} [opts = {}] The options
    */
   addTelegram(cKey, tgID, sKey, opts){
     if(!Telegram){
@@ -207,9 +343,9 @@ class Client extends EventEmitter{
 
   /**
    * Get information on a nation
-   * @param {String} nation The nation name
+   * @param {Nation} nation The nation name
    * @param {Array} [opts = []] What to include (default mostly everything). Can include one or several of these: admirable, animal, animaltrait, banner, banners, capital, category, census (can be configured, see docs for more info), crime, currency, customleader, customcapital, customreligion, dbid, deaths, demonym, demonym2, demonym2plural, dispatches, dispatchlist, endorsements, factbooks, factbooklist, firstlogin, flag, founded, foundedtime, freedom, fullname, gavote, gdp, govt, govtdesc, govtpriority, happenings, income, industrydesc, influence, lastactivity, lastlogin, leader, legislation, majorindustry, motto, name, notable, policies, poorest, population, publicsector, rcensus, region, religion, richest, scvote, sectors, sensibilities, tax, tgcanrecruit, tgcancampaign, type, wa, wabadges, wcensus, zombie
-   * @returns {Promise<Object>} 
+   * @returns {Promise<Object<String, NationObject>>} 
    */
   getNation(nation, opts = []){
     return new Promise(async (resolve, reject) => {
@@ -242,11 +378,11 @@ class Client extends EventEmitter{
         })
   
         res.on('end', async () => {
-          let obj = {}
+          let obj = {NATION:{}}
           let o = await convert(data).elements[0].elements
           for(let i = 0; i < o.length; i++){
             if(!o[i].elements) continue
-            obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" ? (o[i].elements[0].text ? o[i].elements[0].text : o[i].elements[0].cdata) : (o[i].name != "DEATHS" && o[i].name != "CENSUS") ? library.flattenResponse(o[i].elements) : o[i].name != "CENSUS" ? library.getDeathData(o[i].elements) : library.getCensusData(o[i].elements)
+            obj.NATION[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" ? (o[i].elements[0].text ? o[i].elements[0].text : o[i].elements[0].cdata) : (o[i].name != "DEATHS" && o[i].name != "CENSUS") ? library.flattenResponse(o[i].elements) : o[i].name != "CENSUS" ? library.getDeathData(o[i].elements) : library.getCensusData(o[i].elements)
           }
           resolve(obj)
         })
@@ -262,7 +398,7 @@ class Client extends EventEmitter{
 
   /**
    * Get your dossier (must be logged in)
-   * @param {Integer} [from = undefined]
+   * @param {number} [from = undefined]
    * @returns {Promise<Object>}
    */
   async getDossier(from = undefined){
@@ -314,7 +450,7 @@ class Client extends EventEmitter{
 
   /**
    * Get your issues (must be logged in)
-   * @returns {Promise<Object>}
+   * @returns {Promise<Issue[]>}
    */
   async getIssues(){
     if(!this.loginb) throw new Error("You must be logged in to do this")
@@ -468,7 +604,7 @@ class Client extends EventEmitter{
 
   /**
    * Get your next issue time as an integer (must be logged in)
-   * @returns {Promise<Integer>}
+   * @returns {Promise<number>}
    */
   async getNextIssueTime(){
     if(!this.loginb) throw new Error("You must be logged in to do this")
@@ -518,8 +654,8 @@ class Client extends EventEmitter{
   
   /**
    * Get your notices (must be logged in)
-   * @param {Integer} [from = undefined]
-   * @returns {Promise<Object>}
+   * @param {Number} [from = undefined]
+   * @returns {Promise<Object<String, Notice[]>>}
    */
   async getNotices(from = undefined){
     if(!this.loginb) throw new Error("You must be logged in to do this")
@@ -614,7 +750,7 @@ class Client extends EventEmitter{
 
   /**
    * Get your region dossier (must be logged in)
-   * @param {Integer} [from = undefined]
+   * @param {number} [from = undefined]
    * @returns {Promise<Object>}
    */
   async getRegionDossier(from = undefined){
@@ -667,7 +803,7 @@ class Client extends EventEmitter{
 
   /**
    * Get your unread notifications (must be logged in)
-   * @returns {Promise<Object>}
+   * @returns {Promise<Object<String, Unread>>}
    */
   async getUnread(){
     if(!this.loginb) throw new Error("You must be logged in to do this")
@@ -722,9 +858,9 @@ class Client extends EventEmitter{
 
   /**
    * Get information on a region
-   * @param {String} region The region name
+   * @param {Region} region The region name
    * @param {Array} [opts = []] What to include (default mostly everything). census (can be configured, see docs), censusranks, dbid, delegate, delegateauth, delegatevotes, dispatches, embassies, embassyrmb, factbook, flag, founded, foundedtime, founder, founderauth, gavote, happenings, history, lastupdate, messages (can be configured see docs), name, nations, numnations, officers, poll, power, scvote, tags, wabadges, zombie
-   * @returns {Promise<Object>} 
+   * @returns {Promise<Object<String, RegionObject>>} 
    */
   getRegion(region, opts = []){
     return new Promise(async (resolve, reject) => {
@@ -921,6 +1057,7 @@ class Client extends EventEmitter{
         res.on('end', async () => {
           let obj = {}
           let o = await convert(data).elements[0].elements
+          if(o == undefined) reject("Doesn't exist")
           for(let i = 0; i < o.length; i++){
             if(!o[i].elements) continue
             obj[o[i].name] = o[i].elements.length == 1 && o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? (o[i].elements[0].text ? o[i].elements[0].text.includes(',') ? o[i].elements[0].text.split(',') : o[i].elements[0].text : o[i].elements[0].cdata) : o[i].name != "CENSUS" && o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenResponse(o[i].elements) : o[i].name != "BANNERS" && o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.getWorldCensusData(o[i].elements) : o[i].name != "DISPATCH" && o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenBanners(o[i].elements) : o[i].name != "DISPATCHLIST" && o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatch(o[i].elements) : o[i].name != "FACTION" && o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenDispatchList(o[i].elements) : o[i].name != "FACTIONS" && o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFaction(o[i].elements) : o[i].name != "HAPPENINGS" && o[i].name != "POLL" ? library.flattenFactions(o[i].elements) : o[i].name != "POLL" ? library.flattenHappenings(o[i].elements) : library.flattenPoll(o[i].elements)
@@ -998,9 +1135,7 @@ class Client extends EventEmitter{
 
   /**
    * Login to nationstates to access private shards. After you login once, you can remove your password from your code until you change it.
-   * @param {Object} account
-   * @param {String} account.name The account's name
-   * @param {String} [account.password] The account's password
+   * @param {AccountDetails} account
    */
   login(account){
     return new Promise(async (resolve, reject) => {
@@ -1060,11 +1195,15 @@ class Client extends EventEmitter{
       ERROR: 'error',
       READY: 'ready'
     }
-    this.USERAGENT = 'nsapi.js@1.0.0'
+    this.USERAGENT = 'nsapi.js@1.0.1'
   }
 
+  // Static methods
+
   /**
-   * Static methods
+   * Bi-directional authority parsing
+   * @param {String|String[]} element 
+   * @returns {String|String[]} A string of authority codes or an array of authority strings
    */
   static parseAuthorities(element){
     if(typeof element == "string"){

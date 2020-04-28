@@ -1,3 +1,11 @@
+/** Typedefs
+ * 
+ * @typedef {Object} TelegramOptions
+ * @param {boolean} [recruitment = false]
+ * @param {number} [interval = 180000 | 30000]
+ * @param {Array} [sendTo = ['new nations']]
+ */
+
 const https = require('https')
 const EventEmitter = require('events')
 class Telegrammer extends EventEmitter{
@@ -6,11 +14,8 @@ class Telegrammer extends EventEmitter{
    * @param {String} cKey The client key of the telegram
    * @param {String} tgID The telegram's ID
    * @param {String} sKey The telegram's secret key
-   * @param {Object} [opts = {}] The options
-   * @param {boolean} [opts.recruitment = false]
-   * @param {Integer} [opts.interval = 180000 || 30000]
-   * @param {Array} [opts.sendTo = ['new nations']]
-   * @param {nsapi.js Client} client The nsapi.js Client
+   * @param {TelegramOptions} [opts = {}] The options
+   * @param {Client} client The nsapi.js Client
    */
   constructor(cKey, tgID, sKey, opts = {}, client){
     super()
@@ -40,7 +45,7 @@ class Telegrammer extends EventEmitter{
 
   /**
    * Gets the client
-   * @returns {nsapi.js Client}
+   * @returns {Client}
    */
   get client(){
     return this.nsapiClient
@@ -80,6 +85,7 @@ class Telegrammer extends EventEmitter{
 
   /**
    * Sets the telegram's client instance
+   * @param {Client} client The nsapi.js client
    */
   set client(client){
     this.nsapiClient = client
@@ -87,6 +93,7 @@ class Telegrammer extends EventEmitter{
 
   /**
    * Sets the telegram's client key
+   * @param {String} key The client key
    */
   set clientKey(key){
     this.cKey = key
@@ -94,6 +101,7 @@ class Telegrammer extends EventEmitter{
 
   /**
    * Sets the telegram's id
+   * @param {String} id The id
    */
   set tgID(id){
     this.telegramID = id
@@ -101,11 +109,16 @@ class Telegrammer extends EventEmitter{
 
   /**
    * Sets the telegram's secret key
+   * @param {String} key The secret key
    */
   set secretKey(key){
     this.sKey = key
   }
 
+  /**
+   * Sets intervals 
+   * @param {Interval} interval The interval
+   */
   set intervals(interval){
     if(!this.ints) this.ints = []
     this.ints.push(interval)
@@ -129,7 +142,7 @@ class Telegrammer extends EventEmitter{
 
   /**
    * Ensures the client is a proper instance of a nsapi.js Client
-   * @param {nsapi.js Client} client
+   * @param {Client} client The nsapi.js client
    */
   checkClient(client){
     const c = require.cache[require.resolve('nsapi.js')]
@@ -320,6 +333,9 @@ class Telegrammer extends EventEmitter{
     })
   }
 
+  /**
+   * Destroys all intervals
+   */
   destroy(){
     let intervals = this.intervals
     for(let i = 0; i < intervals.length; i++) clearInterval(intervals[i])
