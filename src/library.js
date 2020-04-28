@@ -80,7 +80,7 @@
  * @property {String} NAME The name of the banner
  * @property {String} VALIDITY The prerequisites to obtain the banner
  * 
- * @typedef {Object} Disptach
+ * @typedef {Object} Dispatch
  * @property {String} TITLE The title of the dispatch
  * @property {Nation} AUTHOR The author of the dispatch
  * @property {String} CATEGORY The dispatch's category
@@ -555,7 +555,7 @@ module.exports = {
   /**
    * Flattens a dispatch into a useable object
    * @param {Object[]} elements An array of objects returned by the API
-   * @returns {Disptach} The dispatch
+   * @returns {Dispatch} The dispatch
    */
   flattenDispatch: (elements) => {
     let o = {}
