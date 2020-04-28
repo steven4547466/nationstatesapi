@@ -1,6 +1,6 @@
 {
   "name": "nsapi.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "NationStates API wrapper",
   "main": "./src/nsapi.js",
   "repository": {
@@ -13,7 +13,7 @@
     "wrapper"
   ],
   "author": "Steven4547466",
-  "license": "MIT",
+  "license": "CC-BY-SA-4.0",
   "bugs": {
     "url": "https://github.com/steven4547466/nsapi.js/issues"
   },
@@ -22,5 +22,12 @@
     "better-sqlite3": "^5.4.3",
     "enmap": "^5.1.2",
     "xml-js": "^1.6.11"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
